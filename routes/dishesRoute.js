@@ -43,4 +43,25 @@ router.post("/", async (req, res) => {
     }
 })
 
+router.put("/:id", async (req, res) => {
+    if (!req.body.name) {
+        res.status(400).json({error: 'please enter a name!'})
+    }
+    try {
+      const count = await db("dishes")
+        .where({ id: req.params.id})
+        .update(req.body)
+        if (count > 0) {
+            const cohort = await db('dishes')
+            .where({id: req.params.id})
+            .first();
+    
+            res.status(200).json(cohort)
+        } else {
+            res.status(404).json({error: "cohort not found"})
+        }
+    } catch (error) {
+      res.status(500).json(error)
+    }
+})
 module.exports = router;
